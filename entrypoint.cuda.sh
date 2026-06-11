@@ -20,13 +20,13 @@ else
   qualities=(quality4)
 fi
 
-output_execpush="/usr/local/bin/ffmpeg $ANALYZEDURATION_ARG-async 1 -vsync -1 -hwaccel cuda -hwaccel_output_format cuda -c:v h264_cuvid -i rtmp://localhost:1935/stream/\$name "
+output_execpush="/usr/local/bin/ffmpeg $ANALYZEDURATION_ARG -async 1 -vsync -1 -hwaccel cuda -hwaccel_output_format cuda -i rtmp://localhost:1935/stream/\$name "
 output_hlsvariants=""
-for quality in "${qualities[@]}"; do
-  declare -n qualitylist=$quality
-  output_execpush="$output_execpush"$'\n\t\t'"-c:v h264_nvenc -c:a aac -b:v ${qualitylist[1]} -b:a ${qualitylist[2]} -vf \"scale_npp=${qualitylist[0]}:trunc(ow/a/2)*2\" -zerolatency 1 $MAX_MUXING_QUEUE_SIZE_ARG-f flv rtmp://localhost:1935/hls/\$name_${qualitylist[3]}"
-  output_hlsvariants=$'\n\t\t'"hls_variant _${qualitylist[3]} BANDWIDTH=${qualitylist[4]};"$'\n'"${output_hlsvariants}"
-done
+#for quality in "${qualities[@]}"; do
+#  declare -n qualitylist=$quality
+#  output_execpush="$output_execpush"$'\n\t\t'" -c:a aac -b:v ${qualitylist[1]} -b:a ${qualitylist[2]} -vf \"scale_npp=${qualitylist[0]}:trunc(ow/a/2)*2\" -zerolatency 1 $MAX_MUXING_QUEUE_SIZE_ARG -f flv rtmp://localhost:1935/hls/\$name_${qualitylist[3]}"
+#  output_hlsvariants=$'\n\t\t'"hls_variant _${qualitylist[3]} BANDWIDTH=${qualitylist[4]};"$'\n'"${output_hlsvariants}"
+#done
 
 export EXECPUSH="$output_execpush"
 export HLSVARIANTS="$output_hlsvariants"
